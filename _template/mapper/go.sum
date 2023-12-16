@@ -55,6 +55,7 @@ github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORN
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
+github.com/kubeedge/kubeedge v1.15.0/go.mod h1:6vdsEBZ7+r43MhZVbXc4gFzaOvVJrDB5bR6sgscCv9U=
 github.com/kubeedge/kubeedge v1.15.1 h1:+5+RJ8N/vGR1ZFhsGjAUhWSmyudI7apYMQYlM+SYBhk=
 github.com/kubeedge/kubeedge v1.15.1/go.mod h1:oPgNILjj7N3MDQOJMD4LUg16GXLT8GG/YA3dmKakYRw=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
