@@ -21,15 +21,14 @@ import (
 
 	"k8s.io/klog/v2"
 
-	"github.com/kubeedge/Template/pkg/common"
-	"github.com/kubeedge/Template/pkg/grpcclient"
+	"github.com/kubeedge/mapper-framework/pkg/common"
+	"github.com/kubeedge/mapper-framework/pkg/grpcclient"
 )
 
 var ErrEmptyData error = errors.New("device or device model list is empty")
 
 func ParseByUsingRegister(devices map[string]*common.DeviceInstance,
-	dms map[string]common.DeviceModel,
-	protocols map[string]common.ProtocolConfig) error {
+	dms map[string]common.DeviceModel) error {
 	deviceList, deviceModelList, err := grpcclient.RegisterMapper(true)
 	if err != nil {
 		return err
@@ -59,7 +58,6 @@ func ParseByUsingRegister(devices map[string]*common.DeviceInstance,
 		devices[instance.ID] = instance
 		klog.V(4).Info("Instance: ", instance.ID)
 		dms[instance.Model] = modelMap[instance.Model]
-		protocols[instance.ProtocolName] = protocol
 	}
 
 	return nil

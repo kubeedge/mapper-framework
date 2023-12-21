@@ -1,8 +1,8 @@
 package global
 
 import (
-	"github.com/kubeedge/Template/pkg/common"
-	"github.com/kubeedge/Template/pkg/config"
+	"github.com/kubeedge/mapper-framework/pkg/common"
+	"github.com/kubeedge/mapper-framework/pkg/config"
 )
 
 // DevPanel defined operations on devices, manage the lifecycle of devices
@@ -12,7 +12,7 @@ type DevPanel interface {
 	// DevInit get device info by dmi interface
 	DevInit(cfg *config.Config) error
 	// UpdateDev update device's config and restart the device
-	UpdateDev(model *common.DeviceModel, device *common.DeviceInstance, protocol *common.ProtocolConfig)
+	UpdateDev(model *common.DeviceModel, device *common.DeviceInstance)
 	// UpdateDevTwins update device twin's config and restart the device
 	UpdateDevTwins(deviceID string, twins []common.Twin) error
 	// DealDeviceTwinGet get device's twin data
