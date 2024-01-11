@@ -11,10 +11,14 @@ MAPPER_DIR="$(cd "$(dirname "$ROOT_DIR")" && pwd -P)"
 
 function entry() {
   # copy template
-  read -p "Please input the mapper name (like 'Bluetooth', 'BLE'): " -r mapperName
-  if [[ -z "${mapperName}" ]]; then
-    echo "the mapper name is required"
-    exit 1
+  if [ $# -eq 0 ] ;then
+    read -p "Please input the mapper name (like 'Bluetooth', 'BLE'): " -r mapperName
+    if [[ -z "${mapperName}" ]]; then
+      echo "the mapper name is required"
+      exit 1
+    fi
+  else
+    mapperName=$1
   fi
   mapperNameLowercase=$(echo -n "${mapperName}" | tr '[:upper:]' '[:lower:]')
   mapperPath="${MAPPER_DIR}/${mapperNameLowercase}"
@@ -27,6 +31,8 @@ function entry() {
   mapperVar=$(echo "${mapperName}" | sed -e "s/\b\(.\)/\\u\1/g")
   sed -i "s/Template/${mapperVar}/g" `grep Template -rl ${mapperPath}`
   sed -i "s/kubeedge\/${mapperVar}/kubeedge\/${mapperNameLowercase}/g" `grep "kubeedge\/${mapperVar}" -rl $mapperPath`
+
+  cd ${mapperPath} && go mod tidy
 
   empty_file_path="${MAPPER_DIR}/.empty"
   if [ -f "$empty_file_path" ]; then

@@ -7,11 +7,11 @@ import (
 	"k8s.io/klog/v2"
 
 	"github.com/kubeedge/Template/device"
-	"github.com/kubeedge/Template/pkg/common"
-	"github.com/kubeedge/Template/pkg/config"
-	"github.com/kubeedge/Template/pkg/grpcserver"
-	"github.com/kubeedge/Template/pkg/httpserver"
-	"github.com/kubeedge/Template/pkg/util/parse"
+	"github.com/kubeedge/mapper-framework/pkg/common"
+	"github.com/kubeedge/mapper-framework/pkg/config"
+	"github.com/kubeedge/mapper-framework/pkg/grpcclient"
+	"github.com/kubeedge/mapper-framework/pkg/grpcserver"
+	"github.com/kubeedge/mapper-framework/pkg/httpserver"
 )
 
 func main() {
@@ -27,29 +27,36 @@ func main() {
 	}
 	klog.Infof("config: %+v", c)
 
+	klog.Infoln("Mapper will register to edgecore")
+	deviceList, deviceModelList, err := grpcclient.RegisterMapper(true)
+	if err != nil {
+		klog.Fatal(err)
+	}
+	klog.Infoln("Mapper register finished")
+
+	panel := device.NewDevPanel()
+	err = panel.DevInit(deviceList, deviceModelList)
+	if err != nil && !errors.Is(err, device.ErrEmptyData) {
+		klog.Fatal(err)
+	}
+	klog.Infoln("devInit finished")
+	go panel.DevStart()
+
+	// start http server
+	httpServer := httpserver.NewRestServer(panel)
+	go httpServer.StartServer()
+
 	// start grpc server
 	grpcServer := grpcserver.NewServer(
 		grpcserver.Config{
 			SockPath: c.GrpcServer.SocketPath,
 			Protocol: common.ProtocolCustomized,
 		},
-		device.NewDevPanel(),
+		panel,
 	)
-
-	panel := device.NewDevPanel()
-	err = panel.DevInit(c)
-	if err != nil && !errors.Is(err, parse.ErrEmptyData) {
-		klog.Fatal(err)
-	}
-	klog.Infoln("devInit finished")
-
-	go panel.DevStart()
-
-	httpServer := httpserver.NewRestServer(panel)
-	go httpServer.StartServer()
-
 	defer grpcServer.Stop()
 	if err = grpcServer.Start(); err != nil {
 		klog.Fatal(err)
 	}
+
 }
