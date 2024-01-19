@@ -124,6 +124,7 @@ func dataHandler(ctx context.Context, dev *driver.CustomizedDev) {
 		// handle twin
 		twinData := &TwinData{
 			DeviceName:      dev.Instance.Name,
+			DeviceNamespace: dev.Instance.Namespace,
 			Client:          dev.CustomizedClient,
 			Name:            twin.PropertyName,
 			Type:            twin.ObservedDesired.Metadata.Type,
@@ -143,6 +144,15 @@ func dataHandler(ctx context.Context, dev *driver.CustomizedDev) {
 		if twin.Property.PushMethod.DBMethod.DBMethodName != "" {
 			dataModel := common.NewDataModel(dev.Instance.Name, twin.Property.PropertyName, common.WithType(twin.ObservedDesired.Metadata.Type))
 			dbHandler(ctx, &twin, dev.CustomizedClient, &visitorConfig, dataModel)
+			switch twin.Property.PushMethod.DBMethod.DBMethodName {
+			// TODO add more database
+			case "influx":
+				dbInflux.DataHandler(ctx, &twin, dev.CustomizedClient, &visitorConfig, dataModel)
+			case "redis":
+				dbRedis.DataHandler(ctx, &twin, dev.CustomizedClient, &visitorConfig, dataModel)
+			case "tdengine":
+				dbTdengine.DataHandler(ctx, &twin, dev.CustomizedClient, &visitorConfig, dataModel)
+			}
 		}
 	}
 }
@@ -204,137 +214,13 @@ func dbHandler(ctx context.Context, twin *common.Twin, client *driver.Customized
 	switch twin.Property.PushMethod.DBMethod.DBMethodName {
 	// TODO add more database
 	case "influx":
-		dbConfig, err := dbInflux.NewDataBaseClient(twin.Property.PushMethod.DBMethod.DBConfig.Influxdb2ClientConfig, twin.Property.PushMethod.DBMethod.DBConfig.Influxdb2DataConfig)
-		if err != nil {
-			klog.Errorf("new database client error: %v", err)
-			return
-		}
-		dbClient := dbConfig.InitDbClient()
-		if err != nil {
-			klog.Errorf("init database client err: %v", err)
-			return
-		}
-		reportCycle := time.Duration(twin.Property.ReportCycle)
-		if reportCycle == 0 {
-			reportCycle = common.DefaultReportCycle
-		}
-		ticker := time.NewTicker(reportCycle)
-		go func() {
-			for {
-				select {
-				case <-ticker.C:
-					deviceData, err := client.GetDeviceData(visitorConfig)
-					if err != nil {
-						klog.Errorf("publish error: %v", err)
-						continue
-					}
-					sData, err := common.ConvertToString(deviceData)
-					if err != nil {
-						klog.Errorf("Failed to convert publish method data : %v", err)
-						continue
-					}
-					dataModel.SetValue(sData)
-					dataModel.SetTimeStamp()
+		dbInflux.DataHandler(ctx, twin, client, visitorConfig, dataModel)
 
-					err = dbConfig.AddData(dataModel, dbClient)
-					if err != nil {
-						klog.Errorf("influx database add data error: %v", err)
-						return
-					}
-				case <-ctx.Done():
-					dbConfig.CloseSession(dbClient)
-					return
-				}
-			}
-		}()
 	case "redis":
-		dbConfig, err := dbRedis.NewDataBaseClient(twin.Property.PushMethod.DBMethod.DBConfig.RedisClientConfig)
-		if err != nil {
-			klog.Errorf("new database client error: %v", err)
-			return
-		}
-		err = dbConfig.InitDbClient()
-		if err != nil {
-			klog.Errorf("init redis database client err: %v", err)
-			return
-		}
-		reportCycle := time.Duration(twin.Property.ReportCycle)
-		if reportCycle == 0 {
-			reportCycle = 1 * time.Second
-		}
-		ticker := time.NewTicker(reportCycle)
-		go func() {
-			for {
-				select {
-				case <-ticker.C:
-					deviceData, err := client.GetDeviceData(visitorConfig)
-					if err != nil {
-						klog.Errorf("publish error: %v", err)
-						continue
-					}
-					sData, err := common.ConvertToString(deviceData)
-					if err != nil {
-						klog.Errorf("Failed to convert publish method data : %v", err)
-						continue
-					}
-					dataModel.SetValue(sData)
-					dataModel.SetTimeStamp()
+		dbRedis.DataHandler(ctx, twin, client, visitorConfig, dataModel)
 
-					err = dbConfig.AddData(dataModel)
-					if err != nil {
-						klog.Errorf("redis database add data error: %v", err)
-						return
-					}
-				case <-ctx.Done():
-					dbConfig.CloseSession()
-					return
-				}
-			}
-		}()
 	case "tdengine":
-		dbConfig, err := dbTdengine.NewDataBaseClient(twin.Property.PushMethod.DBMethod.DBConfig.TDEngineClientConfig)
-		if err != nil {
-			klog.Errorf("new database client error: %v", err)
-			return
-		}
-		err = dbConfig.InitDbClient()
-		if err != nil {
-			klog.Errorf("init database client err: %v", err)
-			return
-		}
-		reportCycle := time.Duration(twin.Property.ReportCycle)
-		if reportCycle == 0 {
-			reportCycle = 1 * time.Second
-		}
-		ticker := time.NewTicker(reportCycle)
-		go func() {
-			for {
-				select {
-				case <-ticker.C:
-					deviceData, err := client.GetDeviceData(visitorConfig)
-					if err != nil {
-						klog.Errorf("publish error: %v", err)
-						continue
-					}
-					sData, err := common.ConvertToString(deviceData)
-					if err != nil {
-						klog.Errorf("Failed to convert publish method data : %v", err)
-						continue
-					}
-					dataModel.SetValue(sData)
-					dataModel.SetTimeStamp()
-
-					err = dbConfig.AddData(dataModel)
-					if err != nil {
-						klog.Errorf("tdengine database add data error: %v", err)
-						return
-					}
-				case <-ctx.Done():
-					dbConfig.CloseSessio()
-					return
-				}
-			}
-		}()
+		dbTdengine.DataHandler(ctx, twin, client, visitorConfig, dataModel)
 	}
 }
 
@@ -404,7 +290,7 @@ func (d *DevPanel) UpdateDev(model *common.DeviceModel, device *common.DeviceIns
 	// start new device
 	d.devices[device.ID] = new(driver.CustomizedDev)
 	d.devices[device.ID].Instance = *device
-	d.models[device.ID] = *model
+	d.models[model.ID] = *model
 
 	ctx, cancelFunc := context.WithCancel(context.Background())
 	d.deviceMuxs[device.ID] = cancelFunc
@@ -524,26 +410,26 @@ func (d *DevPanel) stopDev(dev *driver.CustomizedDev, id string) error {
 }
 
 // GetModel if the model exists, return device model
-func (d *DevPanel) GetModel(modelName string) (common.DeviceModel, error) {
+func (d *DevPanel) GetModel(modelID string) (common.DeviceModel, error) {
 	d.serviceMutex.Lock()
 	defer d.serviceMutex.Unlock()
-	if model, ok := d.models[modelName]; ok {
+	if model, ok := d.models[modelID]; ok {
 		return model, nil
 	}
-	return common.DeviceModel{}, fmt.Errorf("deviceModel %s not found", modelName)
+	return common.DeviceModel{}, fmt.Errorf("deviceModel %s not found", modelID)
 }
 
 // UpdateModel update device model
 func (d *DevPanel) UpdateModel(model *common.DeviceModel) {
 	d.serviceMutex.Lock()
-	d.models[model.Name] = *model
+	d.models[model.ID] = *model
 	d.serviceMutex.Unlock()
 }
 
 // RemoveModel remove device model
-func (d *DevPanel) RemoveModel(modelName string) {
+func (d *DevPanel) RemoveModel(modelID string) {
 	d.serviceMutex.Lock()
-	delete(d.models, modelName)
+	delete(d.models, modelID)
 	d.serviceMutex.Unlock()
 }
 
