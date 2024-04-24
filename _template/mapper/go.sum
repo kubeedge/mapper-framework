@@ -47,6 +47,10 @@ github.com/juju/gnuflag v0.0.0-20171113085948-2ce1bb71843d/go.mod h1:2PavIy+JPci
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
 github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=
 github.com/kr/text v0.2.0/go.mod h1:eLer722TekiGuMkidMxC/pM04lWEeraHUUmBw8l2grE=
+github.com/kubeedge/kubeedge v1.17.0-beta.0 h1:BmVSsdQhlBpEu/9bTs91gpnYnQnxEvIJEhCSN9a8LKk=
+github.com/kubeedge/kubeedge v1.17.0-beta.0/go.mod h1:4rERR0DnbDONgQPsSG+gu53kBZNXXwj3kVs8g8jfCXM=
+github.com/kubeedge/mapper-framework v1.16.1-0.20240424015840-62ddff0c5c00 h1:d6UJUNuSL9sYzHaZwwLMZzbucdI1q+jdWQPqweX2vAc=
+github.com/kubeedge/mapper-framework v1.16.1-0.20240424015840-62ddff0c5c00/go.mod h1:mYEJop0LCKuErFPrpKiCTGsqwijDZSr4REJTJCTGl5U=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd h1:TRLaZ9cD/w8PVh93nsPXa1VrQ6jlwL5oN8l14QlcNfg=
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
