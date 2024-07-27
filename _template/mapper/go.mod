@@ -7,11 +7,11 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/influxdata/influxdb-client-go/v2 v2.13.0
-	github.com/kubeedge/kubeedge v0.0.0
-	github.com/kubeedge/mapper-framework v0.0.0
+	github.com/kubeedge/kubeedge v1.18.0
+	github.com/kubeedge/mapper-framework v1.17.1-0.20240727071908-23ae39c11809
 	github.com/sailorvii/goav v0.1.4
 	github.com/taosdata/driver-go/v3 v3.5.1
-	k8s.io/klog/v2 v2.100.1
+	k8s.io/klog/v2 v2.110.1
 )
 
 require (
@@ -31,16 +31,11 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/oapi-codegen/runtime v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.6-0.20210604193023-d5e0c0615ace // indirect
-	golang.org/x/net v0.21.0 // indirect
+	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/grpc v1.63.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-)
-
-replace (
-	github.com/kubeedge/kubeedge => ../../../../../../kubeedge
-	github.com/kubeedge/mapper-framework => ../mapper-framework
 )
