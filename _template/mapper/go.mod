@@ -7,13 +7,12 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/influxdata/influxdb-client-go/v2 v2.13.0
-	github.com/kubeedge/api v1.19.0
-	github.com/kubeedge/mapper-framework v1.18.1-0.20241029114341-77b73b42c27d
+	github.com/kubeedge/api v0.0.0
+	github.com/kubeedge/mapper-framework v0.0.0
 	github.com/sailorvii/goav v0.1.4
 	github.com/taosdata/driver-go/v3 v3.5.1
 	go.opentelemetry.io/otel v1.23.0
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp v1.23.0
-	go.opentelemetry.io/otel/metric v1.23.0
 	go.opentelemetry.io/otel/sdk v1.23.0
 	go.opentelemetry.io/otel/sdk/metric v1.23.0
 	k8s.io/klog/v2 v2.110.1
@@ -38,6 +37,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/oapi-codegen/runtime v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.6-0.20210604193023-d5e0c0615ace // indirect
+	go.opentelemetry.io/otel/metric v1.23.0 // indirect
 	go.opentelemetry.io/otel/trace v1.23.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
 	golang.org/x/net v0.30.0 // indirect
@@ -48,4 +48,9 @@ require (
 	google.golang.org/grpc v1.67.1 // indirect
 	google.golang.org/protobuf v1.35.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+)
+
+replace (
+	github.com/kubeedge/api => ../api
+	github.com/kubeedge/mapper-framework => ../mapper-framework
 )

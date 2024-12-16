@@ -21,7 +21,6 @@ import (
 	"time"
 
 	"k8s.io/klog/v2"
-
 	"github.com/kubeedge/Template/driver"
 	"github.com/kubeedge/mapper-framework/pkg/common"
 )
