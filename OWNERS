@@ -1,12 +1,10 @@
 approvers:
   - cl2017
   - fisherxu
-  - kevin-wangzefeng
   - WillardHu
 reviewers:
-  - fisherxu
-  - kevin-wangzefeng
   - cl2017
+  - fisherxu
+  - luomengY
   - wbc6080
   - WillardHu
-
